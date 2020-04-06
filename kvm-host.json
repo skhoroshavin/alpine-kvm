@@ -1,0 +1,49 @@
+{
+    "variables": {
+        "disk_size": "2G"
+    },
+
+    "builders": [
+        {
+            "type": "qemu",
+            "disk_image": true,
+            "iso_url": "images/alpine-usb.img",
+            "iso_checksum_type": "none",
+            "headless": true,
+            "memory": 1024,
+            "disk_size": "{{user `disk_size`}}",
+            "format": "raw",
+            "ssh_username": "root",
+            "ssh_private_key_file": "files/packer_key",
+            "qemuargs": [
+                ["-device", "qemu-xhci,id=xhci"],
+                ["-device", "usb-storage,bus=xhci.0,drive=stick"],
+                ["-drive", "file=output-qemu/packer-qemu,if=none,id=stick,format=raw"]
+            ]
+        }
+    ],
+
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "echo 'https://mirror.yandex.ru/mirrors/alpine/v3.11/main' >> /etc/apk/repositories",
+                "echo 'https://mirror.yandex.ru/mirrors/alpine/v3.11/community' >> /etc/apk/repositories",
+                "apk update",
+                "apk add libvirt-daemon qemu-img qemu-system-x86_64",
+                "rc-update add libvirtd",
+                "lbu commit || true"
+            ]
+        }
+    ],
+
+    "post-processors": [
+        {
+            "type": "shell-local",
+            "inline": [
+                "mv output-qemu/packer-qemu images/kvm-host.img",
+                "rm -r output-qemu"
+            ]
+        }
+    ]
+}

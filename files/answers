@@ -1,0 +1,20 @@
+KEYMAPOPTS="us us"
+HOSTNAMEOPTS="-n localhost"
+
+INTERFACESOPTS="auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet dhcp
+"
+
+DNSOPTS=""
+TIMEZONEOPTS="-z UTC"
+PROXYOPTS="none"
+
+APKREPOSOPTS="/media/usb/apks"
+
+SSHDOPTS="-c openssh"
+DISKOPTS="-m data /dev/sda"
+LBUOPTS="/media/usb"
+APKCACHEOPTS="/media/usb/cache"

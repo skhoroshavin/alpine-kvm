@@ -1,0 +1,77 @@
+{
+    "variables": {
+        "disk_size": "2G"
+    },
+
+    "builders": [
+        {
+            "type": "qemu",
+            "iso_url": "https://mirror.yandex.ru/mirrors/alpine/v3.11/releases/x86_64/alpine-extended-3.11.5-x86_64.iso",
+            "iso_checksum": "a108b502c6dab13005acbc1ca0c42122d12995000b6fbd73e879904366602bee",
+            "iso_checksum_type": "sha256",
+            "headless": true,
+            "memory": 1024,
+            "disk_size": "{{user `disk_size`}}",
+            "format": "raw",
+            "http_directory": "files",
+            "ssh_username": "root",
+            "ssh_private_key_file": "files/packer_key",
+            "boot_key_interval": "50ms",
+            "qemuargs": [
+                ["-device", "qemu-xhci,id=xhci"],
+                ["-device", "usb-storage,bus=xhci.0,drive=stick"],
+                ["-drive", "file=output-qemu/packer-qemu,if=none,id=stick,format=raw"]
+            ],
+            "boot_command": [
+                "root<enter><wait>",
+
+                "fdisk /dev/sda<enter>",
+                "o<enter><wait>",
+                "n<enter>p<enter>1<enter><enter><enter><wait>",
+                "t<enter>c<enter><wait>",
+                "a<enter>1<enter><wait>",
+                "w<enter><wait2>",
+
+                "mkfs.vfat /dev/sda1<enter><wait>",
+                "setup-bootable /media/cdrom<enter><wait10>",
+                "reboot<enter><wait15>",
+
+                "root<enter><wait>",
+
+                "ifconfig eth0 up && udhcpc -i eth0<enter><wait2>",
+                "apk add curl<enter><wait>",
+
+                "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/answers >> answers<enter><wait>",
+                "setup-alpine -f answers<enter><wait>",
+                "<enter><wait>",
+                "<enter><wait2>",
+                "setup-ntp -c busybox<enter><wait>",
+                "passwd -d root<enter>",
+
+                "mkdir .ssh<enter><wait>",
+                "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/packer_key.pub > ~/.ssh/authorized_keys<enter><wait>",
+                "lbu include /root/.ssh/authorized_keys<enter><wait>",
+                "lbu commit<enter><wait>",
+
+                "reboot<enter>"
+            ]
+        }
+    ],
+
+    "provisioners": [
+        {
+            "type": "inspec",
+            "profile": "test.rb"
+        }
+    ],
+
+    "post-processors": [
+        {
+            "type": "shell-local",
+            "inline": [
+                "mv output-qemu/packer-qemu images/alpine-usb.img",
+                "rm -r output-qemu"
+            ]
+        }
+    ]
+}
