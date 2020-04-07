@@ -1,4 +1,5 @@
 packer_cache
+output-qemu
 *.img
 *.qcow2
 .terraform
