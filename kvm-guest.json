@@ -1,0 +1,59 @@
+{
+    "variables": {
+        "disk_size": "4G"
+    },
+
+    "builders": [
+        {
+            "type": "qemu",
+            "iso_url": "https://mirror.yandex.ru/mirrors/alpine/v3.11/releases/x86_64/alpine-virt-3.11.5-x86_64.iso",
+            "iso_checksum": "8e14a8f23d1d0a3772d486a94a7d707df65a942e605617ed6431fcb1ede387e4",
+            "iso_checksum_type": "sha256",
+            "headless": true,
+            "memory": 1024,
+            "disk_size": "{{user `disk_size`}}",
+            "http_directory": "files",
+            "ssh_username": "root",
+            "ssh_private_key_file": "files/packer_key",
+            "boot_key_interval": "50ms",
+            "boot_command": [
+                "root<enter><wait>",
+
+                "setup-alpine<enter><wait>",
+                "<enter><enter><enter><enter><enter><wait8>",
+                "<enter><enter><wait><enter><wait>",
+                "<enter><wait3>",
+                "<enter><wait3>",
+                "<enter><wait3>",
+                "vda<enter><wait>sys<enter><wait5>",
+                "y<enter><wait15>",
+                "reboot<enter><wait20>",
+
+                "root<enter><enter><wait>",
+
+                "apk add curl<enter><wait5>",
+                "mkdir .ssh<enter><wait>",
+                "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/packer_key.pub > ~/.ssh/authorized_keys<enter><wait>",
+                "passwd -d root<enter><wait>",
+                "reboot<enter>"
+            ]
+        }
+    ],
+
+    "provisioners": [
+        {
+            "type": "inspec",
+            "profile": "spec/kvm-guest.rb"
+        }
+    ],
+
+    "post-processors": [
+        {
+            "type": "shell-local",
+            "inline": [
+                "mv output-qemu/packer-qemu images/kvm-guest.qcow2",
+                "rm -r output-qemu"
+            ]
+        }
+    ]
+}

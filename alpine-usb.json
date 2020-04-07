@@ -1,6 +1,6 @@
 {
     "variables": {
-        "disk_size": "2G"
+        "disk_size": "1G"
     },
 
     "builders": [
@@ -61,7 +61,7 @@
     "provisioners": [
         {
             "type": "inspec",
-            "profile": "test.rb"
+            "profile": "spec/alpine-usb.rb"
         }
     ],
 

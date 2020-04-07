@@ -1,4 +1,5 @@
 packer_cache
 *.img
+*.qcow2
 .terraform
 *.tfstate*

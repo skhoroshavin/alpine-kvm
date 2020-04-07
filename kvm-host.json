@@ -1,6 +1,6 @@
 {
     "variables": {
-        "disk_size": "2G"
+        "disk_size": "1G"
     },
 
     "builders": [
@@ -34,6 +34,11 @@
                 "rc-update add libvirtd",
                 "lbu commit || true"
             ]
+        },
+
+        {
+            "type": "inspec",
+            "profile": "spec/alpine-usb.rb"
         }
     ],
 
