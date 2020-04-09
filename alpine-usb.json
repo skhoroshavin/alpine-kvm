@@ -39,7 +39,7 @@
                 "root<enter><wait>",
 
                 "ifconfig eth0 up && udhcpc -i eth0<enter><wait2>",
-                "apk add curl<enter><wait>",
+                "apk add curl util-linux e2fsprogs<enter><wait>",
 
                 "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/answers >> answers<enter><wait>",
                 "setup-alpine -f answers<enter><wait>",

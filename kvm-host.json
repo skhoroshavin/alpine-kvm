@@ -30,7 +30,7 @@
                 "echo 'https://mirror.yandex.ru/mirrors/alpine/v3.11/main' >> /etc/apk/repositories",
                 "echo 'https://mirror.yandex.ru/mirrors/alpine/v3.11/community' >> /etc/apk/repositories",
                 "apk update",
-                "apk add libvirt-daemon qemu-img qemu-system-x86_64",
+                "apk add bridge libvirt-daemon qemu-img qemu-system-x86_64",
                 "rc-update add libvirtd",
                 "lbu commit || true"
             ]
