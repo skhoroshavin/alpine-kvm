@@ -1,6 +1,7 @@
 {
     "variables": {
-        "disk_size": "4G"
+        "disk_size": "4G",
+        "build_dir": "build"
     },
 
     "builders": [
@@ -51,7 +52,7 @@
         {
             "type": "shell-local",
             "inline": [
-                "mv output-qemu/packer-qemu images/kvm-guest.qcow2",
+                "mv output-qemu/packer-qemu {{user `build_dir`}}/kvm-guest.qcow2",
                 "rm -r output-qemu"
             ]
         }

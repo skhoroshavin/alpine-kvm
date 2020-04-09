@@ -1,6 +1,5 @@
 packer_cache
 output-qemu
+build
 *.img
 *.qcow2
-.terraform
-*.tfstate*

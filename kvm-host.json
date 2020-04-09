@@ -1,13 +1,14 @@
 {
     "variables": {
-        "disk_size": "1G"
+        "disk_size": "1G",
+        "build_dir": "build"
     },
 
     "builders": [
         {
             "type": "qemu",
             "disk_image": true,
-            "iso_url": "images/alpine-usb.img",
+            "iso_url": "{{user `build_dir`}}/alpine-usb.img",
             "iso_checksum_type": "none",
             "headless": true,
             "memory": 1024,
@@ -46,7 +47,7 @@
         {
             "type": "shell-local",
             "inline": [
-                "mv output-qemu/packer-qemu images/kvm-host.img",
+                "mv output-qemu/packer-qemu {{user `build_dir`}}/kvm-host.img",
                 "rm -r output-qemu"
             ]
         }

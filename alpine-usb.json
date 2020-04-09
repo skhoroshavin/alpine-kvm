@@ -1,6 +1,7 @@
 {
     "variables": {
-        "disk_size": "1G"
+        "disk_size": "1G",
+        "build_dir": "build"
     },
 
     "builders": [
@@ -69,7 +70,7 @@
         {
             "type": "shell-local",
             "inline": [
-                "mv output-qemu/packer-qemu images/alpine-usb.img",
+                "mv output-qemu/packer-qemu {{user `build_dir`}}/alpine-usb.img",
                 "rm -r output-qemu"
             ]
         }
